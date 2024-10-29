@@ -1,17 +1,10 @@
 from flask import Flask, render_template, request, send_file, abort
 import qrcode
 import io
-import re
-from PIL import Image
-from qrcode.image.svg import SvgImage
+import pandas as pd
+import zipfile
 
 app = Flask(__name__)
-
-# Simple regex for validating hex color codes
-HEX_COLOR_REGEX = re.compile(r'^#(?:[0-9a-fA-F]{3}){1,2}$')
-
-def is_valid_color(color):
-    return color in ["black", "white"] or HEX_COLOR_REGEX.match(color)
 
 @app.route('/')
 def index():
@@ -19,55 +12,51 @@ def index():
 
 @app.route('/generate', methods=['POST'])
 def generate():
-    data = request.form.get('data')
-    fill_color = request.form.get('fill_color', 'black')
-    back_color = request.form.get('back_color', 'white')
-    file_type = request.form.get('file_type', 'png')  # Default to PNG if not specified
-    
-    if not data:
-        return "No data provided", 400
-    
-    # Validate color input
-    if not is_valid_color(fill_color) or not is_valid_color(back_color):
-        return "Invalid color provided", 400
+    fill_color = request.form.get('fill_color') or "black"
+    back_color = request.form.get('back_color') or "transparent"
 
-    try:
-        # Create a QR code
-        qr = qrcode.QRCode(version=1, box_size=10, border=5)
-        qr.add_data(data)
-        qr.make(fit=True)
+    # Initialize a list to hold domain names
+    domains = []
 
-        # Generate the image based on the selected format
-        if file_type == 'svg':
-            # SVG format
-            img_bytes = io.BytesIO()
-            qr.make_image(image_factory=SvgImage).save(img_bytes)
-            img_bytes.seek(0)
-            return send_file(img_bytes, mimetype='image/svg+xml', as_attachment=True, download_name='qrcode.svg')
+    # Handle URL input
+    url = request.form.get('url')
+    if url:
+        domains.append(url)
 
+    # Handle file upload
+    if 'file' in request.files and request.files['file'].filename:
+        file = request.files['file']
+        
+        # Read the file
+        if file.filename.endswith('.csv'):
+            df = pd.read_csv(file)
+            domains.extend(df.iloc[:, 0].tolist())  # Assuming domain names are in the first column
+        elif file.filename.endswith(('.xls', '.xlsx')):
+            df = pd.read_excel(file)
+            domains.extend(df.iloc[:, 0].tolist())  # Assuming domain names are in the first column
         else:
-            # Raster formats (PNG or JPEG)
-            img = qr.make_image(fill_color=fill_color, back_color=back_color)
+            return "Unsupported file format", 400
+
+    if not domains:
+        return "No URL or file provided", 400
+
+    # Create a zip file to store the QR codes
+    zip_filename = 'qr_codes.zip'
+    with zipfile.ZipFile(zip_filename, 'w') as zipf:
+        for domain in domains:
+            qr = qrcode.QRCode(version=1, box_size=10, border=5)
+            qr.add_data(domain)
+            qr.make(fit=True)
+
+            img = qr.make_image(fill_color=fill_color, back_color=back_color if back_color != "transparent" else None)
             img_bytes = io.BytesIO()
-
-            if file_type == 'jpeg':
-                img = img.convert("RGB")  # Convert to RGB for JPEG format
-                img.save(img_bytes, format="JPEG")
-                mimetype = 'image/jpeg'
-                download_name = 'qrcode.jpeg'
-            else:
-                # Default to PNG
-                img.save(img_bytes, format="PNG")
-                mimetype = 'image/png'
-                download_name = 'qrcode.png'
-
+            img.save(img_bytes, format='PNG')
             img_bytes.seek(0)
-            return send_file(img_bytes, mimetype=mimetype, as_attachment=True, download_name=download_name)
 
-    except Exception as e:
-        # Log the error message and return a 500 error
-        print(f"Error generating QR code: {e}")
-        abort(500, description="An error occurred while generating the QR code")
+            # Save the QR code to the zip file
+            zipf.writestr(f"{domain}.png", img_bytes.getvalue())
+
+    return send_file(zip_filename, as_attachment=True, download_name=zip_filename)
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -3,30 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR Code Generator</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <title>QR Code Generator</title>
 </head>
 <body>
     <div class="form-container">
-        <h1>Generate QR Code</h1>
-        <form action="/generate" method="POST">
-            <label for="data">Enter Data:</label>
-            <input type="text" id="data" name="data" required placeholder="website or link">
+        <h1>QR Code Generator</h1>
+        <form action="/generate" method="POST" enctype="multipart/form-data">
+            <label for="url">Enter URL:</label>
+            <input type="text" name="url" placeholder="Enter a URL">
+
+            <label for="file">Upload CSV/Excel File:</label>
+            <input type="file" name="file" accept=".csv, .xls, .xlsx">
 
             <label for="fill_color">Fill Color:</label>
-            <input type="text" id="fill_color" name="fill_color" placeholder="e.g., black or #000000">
+            <input type="text" name="fill_color" placeholder="Default: black">
 
             <label for="back_color">Background Color:</label>
-            <input type="text" id="back_color" name="back_color" placeholder="e.g., white or #ffffff">
+            <input type="text" name="back_color" placeholder="Default: transparent">
 
-            <label for="file_type">Select File Type:</label>
-            <select id="file_type" name="file_type">
-                <option value="png">PNG</option>
-                <option value="jpeg">JPEG</option>
-                <option value="svg">SVG</option>
-            </select>
-
-            <button type="submit">Generate QR Code</button>
+            <button type="submit">Generate QR Codes</button>
         </form>
     </div>
 </body>
