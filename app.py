@@ -3,6 +3,7 @@ import qrcode
 import io
 import pandas as pd
 import zipfile
+from qrcode.image.svg import SvgImage
 
 app = Flask(__name__)
 
@@ -14,6 +15,7 @@ def index():
 def generate():
     fill_color = request.form.get('fill_color') or "black"
     back_color = request.form.get('back_color') or "transparent"
+    selected_format = request.form.get('format')  # Get the selected format
 
     # Initialize a list to hold domain names
     domains = []
@@ -48,13 +50,21 @@ def generate():
             qr.add_data(domain)
             qr.make(fit=True)
 
-            img = qr.make_image(fill_color=fill_color, back_color=back_color if back_color != "transparent" else None)
-            img_bytes = io.BytesIO()
-            img.save(img_bytes, format='PNG')
+            # Generate the QR code image
+            if selected_format == 'svg':
+                img = qr.make_image(image_factory=SvgImage)
+                img_bytes = io.BytesIO()
+                img.save(img_bytes)
+                img_bytes.seek(0)
+            else:
+                img = qr.make_image(fill_color=fill_color, back_color=back_color if back_color != "transparent" else None)
+                img_bytes = io.BytesIO()
+                img.save(img_bytes, format=selected_format.upper())  # Save in the selected format
+
             img_bytes.seek(0)
 
             # Save the QR code to the zip file
-            zipf.writestr(f"{domain}.png", img_bytes.getvalue())
+            zipf.writestr(f"{domain}.{selected_format}", img_bytes.getvalue())
 
     return send_file(zip_filename, as_attachment=True, download_name=zip_filename)
 

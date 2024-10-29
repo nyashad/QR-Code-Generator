@@ -11,17 +11,25 @@
         <h1>QR Code Generator</h1>
         <form action="/generate" method="POST" enctype="multipart/form-data">
             <label for="url">Enter URL:</label>
-            <input type="text" name="url" placeholder="Enter a URL">
+            <input type="text" name="url" placeholder="Enter a URL (optional)">
 
             <label for="file">Upload CSV/Excel File:</label>
             <input type="file" name="file" accept=".csv, .xls, .xlsx">
 
+            
             <label for="fill_color">Fill Color:</label>
             <input type="text" name="fill_color" placeholder="Default: black">
-
+            
             <label for="back_color">Background Color:</label>
             <input type="text" name="back_color" placeholder="Default: transparent">
 
+            <label for="format">Select Image Format:</label>
+            <select name="format" required>
+                <option value="svg">SVG</option>
+                <option value="jpeg">JPEG</option>
+                <option value="png">PNG</option>
+            </select>
+            
             <button type="submit">Generate QR Codes</button>
         </form>
     </div>
