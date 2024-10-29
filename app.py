@@ -3,9 +3,13 @@ import qrcode
 import io
 import pandas as pd
 import zipfile
+import os
 from qrcode.image.svg import SvgImage
 
 app = Flask(__name__)
+
+# Define the output folder
+OUTPUT_FOLDER = 'output_qr_codes'
 
 @app.route('/')
 def index():
@@ -42,8 +46,12 @@ def generate():
     if not domains:
         return "No URL or file provided", 400
 
+    # Create output folder if it doesn't exist
+    if not os.path.exists(OUTPUT_FOLDER):
+        os.makedirs(OUTPUT_FOLDER)
+
     # Create a zip file to store the QR codes
-    zip_filename = 'qr_codes.zip'
+    zip_filename = os.path.join(OUTPUT_FOLDER, 'qr_codes.zip')
     with zipfile.ZipFile(zip_filename, 'w') as zipf:
         for domain in domains:
             qr = qrcode.QRCode(version=1, box_size=10, border=5)
@@ -66,7 +74,7 @@ def generate():
             # Save the QR code to the zip file
             zipf.writestr(f"{domain}.{selected_format}", img_bytes.getvalue())
 
-    return send_file(zip_filename, as_attachment=True, download_name=zip_filename)
+    return send_file(zip_filename, as_attachment=True, download_name='qr_codes.zip')
 
 if __name__ == '__main__':
     app.run(debug=True)
