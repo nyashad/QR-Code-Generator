@@ -6,10 +6,17 @@
     <title>QR Code Generator</title>
 </head>
 <body>
-    <h1>QR Code Generator</h1>
-    <form action="/generate" method="post">
-        <label for="data">Enter data (URL, text, etc.):</label>
-        <input type="text" id="data" name="data" required>
+    <h1>Generate QR Code</h1>
+    <form action="/generate" method="POST">
+        <label for="data">Enter Data:</label>
+        <input type="text" id="data" name="data" required placeholder="enter your url">
+        
+        <label for="fill_color">Fill Color:</label>
+        <input type="text" id="fill_color" name="fill_color" placeholder="black">
+        
+        <label for="back_color">Background Color:</label>
+        <input type="text" id="back_color" name="back_color" placeholder="white">
+        
         <button type="submit">Generate QR Code</button>
     </form>
 </body>
