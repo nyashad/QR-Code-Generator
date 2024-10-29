@@ -1,0 +1,80 @@
+/* General page styling */
+body {
+    font-family: Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f4f4f9;
+}
+
+/* Centered container for form */
+.form-container {
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    box-sizing: border-box;
+}
+
+/* Header styling */
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+/* Label styling */
+label {
+    font-weight: bold;
+    color: #555;
+    display: block;
+    margin-top: 1rem;
+}
+
+/* Input and select styling */
+input[type="text"], select {
+    width: 100%;
+    padding: 10px;
+    margin-top: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    color: #333;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s;
+}
+
+/* Focus state for inputs */
+input[type="text"]:focus, select:focus {
+    border-color: #8b6fef;
+    outline: none;
+}
+
+/* Button styling */
+button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    margin-top: 1.5rem;
+    background-color: #8b6fef;
+    color: #ffffff;
+    border: none;
+    border-radius: 4px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+/* Button hover and active states */
+button[type="submit"]:hover {
+    background-color: #7259d7;
+}
+
+button[type="submit"]:active {
+    transform: scale(0.98);
+}

@@ -4,27 +4,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>QR Code Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 <body>
-    <h1>Generate QR Code</h1>
-    <form action="/generate" method="POST">
-        <label for="data">Enter Data:</label>
-        <input type="text" id="data" name="data" required>
+    <div class="form-container">
+        <h1>Generate QR Code</h1>
+        <form action="/generate" method="POST">
+            <label for="data">Enter Data:</label>
+            <input type="text" id="data" name="data" required placeholder="website or link">
 
-        <label for="fill_color">Fill Color:</label>
-        <input type="text" id="fill_color" name="fill_color" placeholder="black">
+            <label for="fill_color">Fill Color:</label>
+            <input type="text" id="fill_color" name="fill_color" placeholder="e.g., black or #000000">
 
-        <label for="back_color">Background Color:</label>
-        <input type="text" id="back_color" name="back_color" placeholder="white">
+            <label for="back_color">Background Color:</label>
+            <input type="text" id="back_color" name="back_color" placeholder="e.g., white or #ffffff">
 
-        <label for="file_type">Select File Type:</label>
-        <select id="file_type" name="file_type">
-            <option value="png">PNG</option>
-            <option value="jpeg">JPEG</option>
-            <option value="svg">SVG</option>
-        </select>
+            <label for="file_type">Select File Type:</label>
+            <select id="file_type" name="file_type">
+                <option value="png">PNG</option>
+                <option value="jpeg">JPEG</option>
+                <option value="svg">SVG</option>
+            </select>
 
-        <button type="submit">Generate QR Code</button>
-    </form>
+            <button type="submit">Generate QR Code</button>
+        </form>
+    </div>
 </body>
 </html>

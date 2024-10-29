@@ -3,6 +3,7 @@ import qrcode
 import io
 import re
 from PIL import Image
+from qrcode.image.svg import SvgImage
 
 app = Flask(__name__)
 
@@ -39,9 +40,8 @@ def generate():
         # Generate the image based on the selected format
         if file_type == 'svg':
             # SVG format
-            img = qr.make_image(fill_color=fill_color, back_color=back_color, image_factory=qrcode.image.svg.SvgImage)
             img_bytes = io.BytesIO()
-            img.save(img_bytes)
+            qr.make_image(image_factory=SvgImage).save(img_bytes)
             img_bytes.seek(0)
             return send_file(img_bytes, mimetype='image/svg+xml', as_attachment=True, download_name='qrcode.svg')
 
