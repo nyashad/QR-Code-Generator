@@ -9,14 +9,21 @@
     <h1>Generate QR Code</h1>
     <form action="/generate" method="POST">
         <label for="data">Enter Data:</label>
-        <input type="text" id="data" name="data" required placeholder="enter your url">
-        
+        <input type="text" id="data" name="data" required>
+
         <label for="fill_color">Fill Color:</label>
         <input type="text" id="fill_color" name="fill_color" placeholder="black">
-        
+
         <label for="back_color">Background Color:</label>
         <input type="text" id="back_color" name="back_color" placeholder="white">
-        
+
+        <label for="file_type">Select File Type:</label>
+        <select id="file_type" name="file_type">
+            <option value="png">PNG</option>
+            <option value="jpeg">JPEG</option>
+            <option value="svg">SVG</option>
+        </select>
+
         <button type="submit">Generate QR Code</button>
     </form>
 </body>
