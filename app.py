@@ -4,6 +4,7 @@ import io
 import pandas as pd
 import zipfile
 import os
+from PIL import Image
 from qrcode.image.svg import SvgImage
 
 app = Flask(__name__)
@@ -18,7 +19,6 @@ def index():
 @app.route('/generate', methods=['POST'])
 def generate():
     fill_color = request.form.get('fill_color') or "black"
-    back_color = request.form.get('back_color') or "transparent"
     selected_format = request.form.get('format')  # Get the selected format
 
     # Initialize a list to hold domain names
@@ -64,8 +64,25 @@ def generate():
                 img_bytes = io.BytesIO()
                 img.save(img_bytes)
                 img_bytes.seek(0)
+            elif selected_format == 'png':
+                # Create a transparent PNG by using RGBA mode
+                img = qr.make_image(fill_color=fill_color, back_color="white")
+                img = img.convert("RGBA")
+                # Set background to transparent where applicable
+                datas = img.getdata()
+                new_data = []
+                for item in datas:
+                    if item[:3] == (255, 255, 255):  # White background pixels
+                        new_data.append((255, 255, 255, 0))  # Convert to transparent
+                    else:
+                        new_data.append(item)
+                img.putdata(new_data)
+
+                img_bytes = io.BytesIO()
+                img.save(img_bytes, format="PNG")
             else:
-                img = qr.make_image(fill_color=fill_color, back_color=back_color if back_color != "transparent" else None)
+                # For JPEG and other formats
+                img = qr.make_image(fill_color=fill_color, back_color="white")
                 img_bytes = io.BytesIO()
                 img.save(img_bytes, format=selected_format.upper())  # Save in the selected format
 
