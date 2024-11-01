@@ -1,5 +1,7 @@
 # QR Code Generator
 
+[![Watch the video](https://img.youtube.com/vi/BYmzY_10QN0/0.jpg)](https://youtu.be/BYmzY_10QN0?autoplay=1&loop=1&playlist=BYmzY_10QN0)
+
 ## Overview
 This project is a web application built with Flask that allows users to generate QR codes from a single URL or a list of domain names provided through a CSV or Excel file. Users can customize the QR codes' colors and select different image formats for download.
 
